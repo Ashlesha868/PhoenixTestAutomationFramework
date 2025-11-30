@@ -3,6 +3,8 @@ package com.api.test;
 import static org.hamcrest.Matchers.*;
 import org.testng.annotations.Test;
 
+import com.api.utils.Spec_util;
+
 import io.restassured.module.jsv.JsonSchemaValidator;
 
 import static com.api.constants.Role.*;
@@ -18,18 +20,11 @@ public class MasterAPITest {
 	public void MasterAPITest()
 	{
 		given()
-		.baseUri(getProperty("BASE_URI"))
-		.and()
-		.headers("Authorization",getToken(FD))
-		.and()
-		.contentType("")
-		.log().all()
+		.spec(Spec_util.requestSpecWithAuth(FD))
 		.when()
 		.post("master")
 		.then()
-		.log().all()
-		.statusCode(200)
-		.time(lessThan(1000L))
+		.spec(Spec_util.responseSpec_OK())
 		.body("message", equalTo("Success"))
 		.body("data",notNullValue())
 		.body("data",hasKey("mst_oem"))
@@ -49,19 +44,15 @@ public class MasterAPITest {
 		public void invalidTokenMasterAPIRequest()
 		{
 			given()
-			.baseUri(getProperty("BASE_URI"))
-			.and()
-			.headers("Authorization"," ")
-			.and()
-			.contentType("")
+			
+			.spec(Spec_util.requestSpec())
 			.log().all()
 			.when()
 			.post("master")
 			.then()
-			.log().all()
-			.statusCode(401);
+			.spec(Spec_util.responseSpec_TEXT(401));
 		}
-        		
+        	
 		
 	}
 	

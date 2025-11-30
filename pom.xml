@@ -62,6 +62,13 @@
     <artifactId>json-schema-validator</artifactId>
     <version>5.5.6</version>
 </dependency>
+		<dependency>
+			<groupId>RestAssuredAPIAutomationFrameworkDemo</groupId>
+			<artifactId>
+				RestAssuredAPIAutomationFrameworkDemo
+			</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 
