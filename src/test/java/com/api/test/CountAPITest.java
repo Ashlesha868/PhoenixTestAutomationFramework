@@ -1,16 +1,23 @@
 package com.api.test;
 
+import static com.api.constants.Role.FD;
+import static com.api.utils.ConfigManager.getProperty;
 import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.blankOrNullString;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import com.api.utils.Spec_util;
 
-import  static org.hamcrest.Matchers.*;
 import org.testng.annotations.Test;
 
-import com.api.constants.Role;
-import static com.api.utils.AuthTokenProvider.*;
-import static com.api.utils.ConfigManager.*;
 
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 public class CountAPITest {
 	
@@ -18,19 +25,14 @@ public class CountAPITest {
 	@Test
 	public void verifyCountAPIResponse() {
 		given()
-		.baseUri(getProperty("BASE_URI"))
-		.and()
-		.header("Authorization",getToken(Role.FD))
-		.log().uri()
-		.log().headers()
-		.log().method()
+		
+		.spec(Spec_util.requestSpecWithAuth(FD))
 		.when()
 		.get("/dashboard/count")
 		.then()
-		.log().all()
-		.statusCode(200)
+		
 		.body("message",equalToIgnoringCase("Success"))
-		.time(lessThan(2000L))
+		.spec(Spec_util.responseSpec_OK())
 		.body("data", notNullValue())
 		.body("data.size()",equalTo(3))
 		.body("data.count",everyItem(greaterThanOrEqualTo(0)))
@@ -42,16 +44,12 @@ public class CountAPITest {
 	@Test
 	public void countAPITest_MissingAuthToken() {
 		given()
-		.baseUri(getProperty("BASE_URI"))
-		.and()
-		.log().uri()
-		.log().headers()
-		.log().method()
+		
+		.spec(Spec_util.requestSpec())
 		.when()
 		.get("/dashboard/count")
 		.then()
-		.log().all()
-		.statusCode(401);
+		.spec(Spec_util.responseSpec_TEXT(401));
 		
 	}
 		

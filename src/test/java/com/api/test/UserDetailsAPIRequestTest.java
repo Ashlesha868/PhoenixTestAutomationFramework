@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.lessThan;
 import org.testng.annotations.Test;
 
 import com.api.utils.ConfigManager;
+import com.api.utils.Spec_util;
 
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
@@ -18,18 +19,9 @@ public class UserDetailsAPIRequestTest {
      @Test
 	public void userDetailsAPIRequest() {
     	 
-    	 Header headerone = new Header("Authorization",AuthTokenProvider.getToken(FD));	
+    	 
     			 given()
-		.baseUri(ConfigManager.getProperty("BASE_URI"))
-		.and()
-        .header(headerone)
-        .and()
-        .accept(ContentType.JSON)
-        .log().uri()
-        .log().method()
-        .log().body()
-        .log().headers()
-        .when()
+		.spec(Spec_util.requestSpecWithAuth(FD))
         .get("userdetails")
         .then()
         .log().all()
